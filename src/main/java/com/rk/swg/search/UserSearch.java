@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class UserSearch implements Search{
+public class UserSearch implements Search {
 
     private static final Logger logger = Logger.getLogger(UserSearch.class);
 
@@ -27,53 +27,51 @@ public class UserSearch implements Search{
     @Override
     public SearchResults search(String fieldName, String fieldValue) {
         try {
-        //get all the tickets
-        List<TicketBuilder> allTickets = ticketSearch.getAllTickets();
+            //get all the tickets
+            List<TicketBuilder> allTickets = ticketSearch.getAllTickets();
 
-        //get org
-        List<OrganizationBuilder> allOrganizations = organizationSearch.getAllOrganizations();
+            //get all organizations
+            List<OrganizationBuilder> allOrganizations = organizationSearch.getAllOrganizations();
 
-        //get all the users related to
-        List<UserBuilder> allUsers = null;
+            //get all the users related
+            List<UserBuilder> allUsers = getUserWithTickets(allTickets, allOrganizations);
 
-            allUsers = getUserWithTickets(allTickets, allOrganizations);
+            List<UserBuilder> searchResult =
+                    allUsers.stream().map(p -> Pair.of(p.getUser().get_id(), p))
+                            .map(
+                                    p -> {
+                                        Field field = null;
+                                        try {
+                                            field = p.getRight().getUser().getClass().getDeclaredField(fieldName);
+                                            field.setAccessible(true);
+                                        } catch (NoSuchFieldException e) {
+                                            logger.error(e);
+                                        }
+                                        Object object = null;
 
-        List<UserBuilder> searchResul =
-                allUsers.stream().map(p -> Pair.of(p.getUser().get_id(), p))
-                .map(
-                        p -> {
-                            Field field = null;
-                            try {
-                                field = p.getRight().getUser().getClass().getDeclaredField(fieldName);
-                                field.setAccessible(true);
-                            } catch (NoSuchFieldException e) {
-                                logger.error(e);
-                            }
-                            Object object = null;
-
-                            try {
-                                object = field.get(p.getRight().getUser());
-                            } catch (IllegalAccessException e) {
-                                logger.error(e);
-                            }
-                            return Pair.of(object, p.getRight());
-                        }).filter(
-                                left -> Objects.nonNull(left.getLeft())).filter(
-                                q -> {
-                                    if (q.getLeft() instanceof ArrayList) {
-                                        ArrayList<String> left = (ArrayList<String>) q.getLeft();
-                                        return left.contains(fieldValue);
-                                    }else if (q.getLeft() instanceof Boolean) {
-                                        return Boolean.parseBoolean(Boolean.toString((Boolean) q.getLeft()));
-                                    }else {
-                                        return q.getLeft().equals(fieldValue);
-                                    }
+                                        try {
+                                            object = field.get(p.getRight().getUser());
+                                        } catch (IllegalAccessException e) {
+                                            logger.error(e);
+                                        }
+                                        return Pair.of(object, p.getRight());
+                                    }).filter(
+                            left -> Objects.nonNull(left.getLeft())).filter(
+                            q -> {
+                                if (q.getLeft() instanceof ArrayList) {
+                                    ArrayList<String> left = (ArrayList<String>) q.getLeft();
+                                    return left.contains(fieldValue);
+                                } else if (q.getLeft() instanceof Boolean) {
+                                    return Boolean.parseBoolean(Boolean.toString((Boolean) q.getLeft()));
+                                } else {
+                                    return q.getLeft().equals(fieldValue);
                                 }
-                         ).filter(left -> Objects.nonNull(left.getLeft())).map(q -> q.getRight())
-                           .collect(Collectors.toList());
+                            }
+                    ).filter(left -> Objects.nonNull(left.getLeft())).map(q -> q.getRight())
+                            .collect(Collectors.toList());
 
 
-        return new SearchResults.UserBuilder().setUserSearchResult(searchResul).build();
+            return new SearchResults.UserBuilder().setUserSearchResult(searchResult).build();
         } catch (IOException e) {
             logger.error(e);
         }
@@ -90,18 +88,18 @@ public class UserSearch implements Search{
                 user -> {
 
                     List<TicketRefBuilder> ticketSubmitters = allTickets.stream()
-                        .filter(
-                            ticket -> user.get_id().equals(ticket.getSubmittedByUser())
-                        ).map(
-                             ticket -> new TicketRefBuilder.Builder()
-                                       .setSubject(ticket.getTicket().getSubject()).build()).collect(Collectors.toList());
+                            .filter(
+                                    ticket -> user.get_id().equals(ticket.getSubmittedByUser())
+                            ).map(
+                                    ticket -> new TicketRefBuilder.Builder()
+                                            .setSubject(ticket.getTicket().getSubject()).build()).collect(Collectors.toList());
 
                     List<TicketRefBuilder> ticketAssigners = allTickets.stream()
                             .filter(
                                     ticket -> user.get_id().equals(ticket.getAssignedToUser())
                             ).map(
-                                    ticket ->  new TicketRefBuilder.Builder()
-                                                .setSubject(ticket.getTicket().getSubject()).build()
+                                    ticket -> new TicketRefBuilder.Builder()
+                                            .setSubject(ticket.getTicket().getSubject()).build()
                             ).collect(Collectors.toList());
 
                     userResultBuilder.add(
@@ -112,7 +110,7 @@ public class UserSearch implements Search{
 
                 });
 
-          return userResultBuilder;
+        return userResultBuilder;
     }
 
 }
