@@ -23,7 +23,7 @@ public class InputConsole {
         while (true) {
                 logger.info("starting the application ..... ");
 
-                System.out.println("Select \n 1 for Users \n 2 For Tickets \n 3 For Organizations \n");
+                System.out.println("Press \n 1) For Users \n 2) For Tickets \n 3) For Organizations \n");
 
                 String choice = scanner.next();
                 int choiceNo = Integer.parseInt(choice);
@@ -53,8 +53,6 @@ public class InputConsole {
                     Gson gson = new Gson();
                     String toJson = gson.toJson(print.getUserSearchResult());
                     System.out.println(toJson);
-                    logger.info(toJson);
-
                 } else {
                     System.out.println("Invalid input");
                     logger.info("Invalid Input");
