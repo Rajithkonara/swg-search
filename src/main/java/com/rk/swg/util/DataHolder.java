@@ -6,6 +6,7 @@ import com.rk.swg.dto.Organization;
 import com.rk.swg.dto.Ticket;
 import com.rk.swg.dto.User;
 import lombok.Getter;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.Arrays;
@@ -13,6 +14,8 @@ import java.util.List;
 
 @Getter
 public class DataHolder {
+
+    private static final Logger logger = Logger.getLogger(DataHolder.class);
 
     private static final String USERSJSON = "users.json";
     private static final String TICKETSJSON = "tickets.json";
@@ -58,7 +61,7 @@ public class DataHolder {
             try {
                 throw new FileNotFoundException(FILENOTFOUND);
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                    logger.error(e);
             }
         }
 
@@ -87,7 +90,7 @@ public class DataHolder {
             try {
                 throw new FileNotFoundException(FILENOTFOUND);
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                logger.error(e);
             }
         }
         return Arrays.asList();
@@ -115,7 +118,7 @@ public class DataHolder {
             try {
                 throw new FileNotFoundException(FILENOTFOUND);
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                logger.error(e);
             }
         }
         return Arrays.asList();
