@@ -5,7 +5,7 @@ import com.rk.swg.dto.Organization;
 import com.rk.swg.dto.SearchResults;
 import com.rk.swg.dto.Ticket;
 import com.rk.swg.dto.User;
-import com.rk.swg.exception.IllegalInputExeception;
+import com.rk.swg.exception.IllegalInputException;
 import com.rk.swg.search.SearchFactory;
 import org.apache.log4j.Logger;
 
@@ -16,7 +16,7 @@ public class InputConsole {
 
     private static final Logger logger = Logger.getLogger(InputConsole.class);
 
-    public static void launchSearchTerminal() throws IllegalInputExeception {
+    public static void launchSearchTerminal() throws IllegalInputException {
 
         Scanner scanner = new Scanner(System.in);
 
@@ -29,7 +29,7 @@ public class InputConsole {
                 int choiceNo = Integer.parseInt(choice);
 
                 if (choiceNo < 1 || choiceNo > 3) {
-                    throw new IllegalInputExeception();
+                    throw new IllegalInputException();
                 }
 
                 System.out.println("Enter the field to search :  ");

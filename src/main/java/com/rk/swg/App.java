@@ -1,7 +1,7 @@
 package com.rk.swg;
 
 import com.rk.swg.console.InputConsole;
-import com.rk.swg.exception.IllegalInputExeception;
+import com.rk.swg.exception.IllegalInputException;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -19,8 +19,8 @@ public class App {
 
         try {
             InputConsole.launchSearchTerminal();
-        } catch (IllegalInputExeception illegalInputExeception) {
-            logger.error(illegalInputExeception);
+        } catch (IllegalInputException illegalInputException) {
+            logger.error(illegalInputException);
         }
 
     }
