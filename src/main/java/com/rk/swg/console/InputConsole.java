@@ -7,6 +7,7 @@ import com.rk.swg.dto.Ticket;
 import com.rk.swg.dto.User;
 import com.rk.swg.exception.IllegalInputException;
 import com.rk.swg.search.SearchFactory;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
@@ -26,7 +27,14 @@ public class InputConsole {
                 System.out.println("Press \n 1) For Users \n 2) For Tickets \n 3) For Organizations \n");
 
                 String choice = scanner.nextLine();
-                int choiceNo = Integer.parseInt(choice);
+
+                boolean isNumber = NumberUtils.isNumber(choice);
+
+                int choiceNo = 0;
+
+                if (isNumber) {
+                   choiceNo  = Integer.parseInt(choice);
+                }
 
                 if (choiceNo < 1 || choiceNo > 3) {
                     throw new IllegalInputException();
@@ -54,12 +62,12 @@ public class InputConsole {
                     String toJson = gson.toJson(print.getUserSearchResult());
                     System.out.println(toJson);
                 } else {
-                    System.out.println("Invalid input");
-                    logger.info("Invalid Input");
+                    System.out.println("Invalid input Field provided ");
+                    logger.error("Invalid input Field provided");
                 }
 
             System.out.println("Enter N for new search or any other key to exit ");
-            boolean continueSearch = scanner.next().equalsIgnoreCase("n");
+            boolean continueSearch = scanner.nextLine().equalsIgnoreCase("n");
             if (!continueSearch) break;
         }
     }
