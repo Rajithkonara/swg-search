@@ -25,7 +25,7 @@ public class InputConsole {
 
                 System.out.println("Press \n 1) For Users \n 2) For Tickets \n 3) For Organizations \n");
 
-                String choice = scanner.next();
+                String choice = scanner.nextLine();
                 int choiceNo = Integer.parseInt(choice);
 
                 if (choiceNo < 1 || choiceNo > 3) {
@@ -33,7 +33,7 @@ public class InputConsole {
                 }
 
                 System.out.println("Enter the field to search :  ");
-                String fieldValue = scanner.next();
+                String fieldValue = scanner.nextLine();
 
                 //validation
                 boolean isValid = false;
@@ -48,7 +48,7 @@ public class InputConsole {
 
                 if (isValid) {
                     System.out.println("Enter Search Value : ");
-                    String searchValue = scanner.next();
+                    String searchValue = scanner.nextLine();
                     SearchResults print = SearchFactory.getInstance().search(choiceNo, fieldValue, searchValue);
                     Gson gson = new Gson();
                     String toJson = gson.toJson(print.getUserSearchResult());
