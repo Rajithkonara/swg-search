@@ -1,6 +1,5 @@
 package com.rk.swg.dto;
 
-import com.rk.swg.search.TicketSearch;
 import lombok.Getter;
 
 import java.util.List;
@@ -43,7 +42,8 @@ public class SearchResults {
 
         public OrganizationBuilder(){}
 
-        public OrganizationBuilder setOrgSearchResult(List<com.rk.swg.dto.OrganizationSearchResultBuilder> orgSearchResult) {
+        public OrganizationBuilder setOrgSearchResult(List<com.rk.swg.dto.OrganizationSearchResultBuilder>
+                                                              orgSearchResult) {
             this.orgSearchResult = orgSearchResult;
             return this;
         }
@@ -64,8 +64,9 @@ public class SearchResults {
             return this;
         }
 
-        public SearchResults build() { return new SearchResults(null, null, ticketSearchResult);  }
-
+        public SearchResults build() {
+            return new SearchResults(null, null, ticketSearchResult);
+        }
     }
 
 }

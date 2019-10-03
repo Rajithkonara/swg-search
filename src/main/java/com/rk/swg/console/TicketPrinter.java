@@ -18,14 +18,16 @@ public class TicketPrinter implements Printer {
         }
 
         Gson gson = new Gson();
+
         results.getTicketSearchResult().forEach(
                 p -> {
-                    String toJson1 = gson.toJson(p.getTicket());
+                    String ticketObject = gson.toJson(p.getTicket());
                     JsonParser parser = new JsonParser();
-                    JsonObject jObj = (JsonObject) parser.parse(toJson1);
+                    JsonObject jsonObject = (JsonObject) parser.parse(ticketObject);
 
-                    jObj.entrySet().forEach(entry -> System.out.println(String.format("%-28.28s %s", entry.getKey(),
-                            entry.getValue().toString())));
+                    jsonObject.entrySet().forEach(entry -> System.out.println(
+                                String.format("%-28.28s %s", entry.getKey(),
+                                entry.getValue().toString())));
 
                     System.out.print("Assignee Name \t\t\t\t ");
 

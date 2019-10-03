@@ -19,13 +19,14 @@ public class OrganizationPrinter implements Printer {
         }
 
         Gson gson = new Gson();
+
         results.getOrgSearchResult().forEach(
                 p -> {
-                    String toJson1 = gson.toJson(p.getOrganization());
+                    String orgObject = gson.toJson(p.getOrganization());
                     JsonParser parser = new JsonParser();
-                    JsonObject jObj = (JsonObject) parser.parse(toJson1);
+                    JsonObject jsonObject = (JsonObject) parser.parse(orgObject);
 
-                    jObj.entrySet().forEach(entry ->
+                    jsonObject.entrySet().forEach(entry ->
                             System.out.println(String.format("%-20.20s %s", entry.getKey(),
                             entry.getValue().toString())));
 
@@ -53,9 +54,9 @@ public class OrganizationPrinter implements Printer {
 
                    String userNames =  usersList.stream().map(String::toString).
                            collect(Collectors.joining(", "));
-                    System.out.println(userNames);
+                   System.out.println(userNames);
 
-                    System.out.println("\n");
+                   System.out.println("\n");
                 }
         );
     }

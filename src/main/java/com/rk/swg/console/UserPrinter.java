@@ -17,16 +17,17 @@ public class UserPrinter implements Printer {
         }
 
         Gson gson = new Gson();
+
         results.getUserSearchResult().forEach(
                 p -> {
-                    String toJson1 = gson.toJson(p.getUser());
+
+                    String userObject = gson.toJson(p.getUser());
                     JsonParser parser = new JsonParser();
-                    JsonObject jObj = (JsonObject) parser.parse(toJson1);
+                    JsonObject jObj = (JsonObject) parser.parse(userObject);
 
                     jObj.entrySet().forEach(entry ->
                             System.out.println(String.format("%-28.28s %s", entry.getKey(),
                                     entry.getValue().toString())));
-
 
                     System.out.println("organization_name \t\t\t " + p.getOrganizationName());
 

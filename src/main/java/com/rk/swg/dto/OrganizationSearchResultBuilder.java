@@ -26,7 +26,7 @@ public class OrganizationSearchResultBuilder {
 
         public Builder() {}
 
-        public Builder setOraganization(Organization oraganization) {
+        public Builder setOrganization(Organization oraganization) {
             this.organization = oraganization;
             return this;
         }

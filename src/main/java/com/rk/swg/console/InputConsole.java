@@ -1,8 +1,5 @@
 package com.rk.swg.console;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.rk.swg.dto.*;
 import com.rk.swg.exception.IllegalInputException;
 import com.rk.swg.search.SearchFactory;
@@ -11,7 +8,6 @@ import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class InputConsole {
 

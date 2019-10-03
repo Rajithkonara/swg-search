@@ -19,7 +19,7 @@ public class UserRefBuilder {
 
         public Builder(){}
 
-        public Builder setassigneeName(String assigneeName) {
+        public Builder setAssigneeName(String assigneeName) {
             this.assigneeName = assigneeName;
             return this;
         }

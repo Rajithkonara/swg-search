@@ -9,9 +9,9 @@ public class UserBuilder {
 
     private List<UserBuilder> userSearchResult;
     private User user;
-    String organizationName;
-    List<TicketRefBuilder> ticketsAssigned;
-    List<TicketRefBuilder> ticketsSubmitted;
+    private String organizationName;
+    private List<TicketRefBuilder> ticketsAssigned;
+    private List<TicketRefBuilder> ticketsSubmitted;
 
 
     public UserBuilder(List<UserBuilder> userSearchResult, User user, String organizationName,
