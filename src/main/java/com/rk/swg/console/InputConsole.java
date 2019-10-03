@@ -1,10 +1,9 @@
 package com.rk.swg.console;
 
 import com.google.gson.Gson;
-import com.rk.swg.dto.Organization;
-import com.rk.swg.dto.SearchResults;
-import com.rk.swg.dto.Ticket;
-import com.rk.swg.dto.User;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.rk.swg.dto.*;
 import com.rk.swg.exception.IllegalInputException;
 import com.rk.swg.search.SearchFactory;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -12,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InputConsole {
 
@@ -57,10 +57,11 @@ public class InputConsole {
                 if (isValid) {
                     System.out.println("Enter Search Value : ");
                     String searchValue = scanner.nextLine();
+
                     SearchResults print = SearchFactory.getInstance().search(choiceNo, fieldValue, searchValue);
-                    Gson gson = new Gson();
-                    String toJson = gson.toJson(print.getUserSearchResult());
-                    System.out.println(toJson);
+
+                    DisplayFactory.getInstance().display(choiceNo, print);
+
                 } else {
                     System.out.println("Invalid input Field provided ");
                     logger.error("Invalid input Field provided");
