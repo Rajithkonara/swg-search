@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -16,14 +17,13 @@ public class TicketSearch implements Search {
 
     private static final Logger logger = Logger.getLogger(TicketSearch.class);
 
-    private UserSearch userSearch;
-
     @Override
     public SearchResults search(String fieldName, String fieldValue) {
 
         try {
 
-            userSearch = new UserSearch();
+            UserSearch userSearch = new UserSearch();
+
             List<UserBuilder> getAllUsers = userSearch.getAllUsers();
 
             List<TicketSearchResultBuilder> getUsersAndOrg = getUsersAndOrganization(getAllUsers);
@@ -36,7 +36,7 @@ public class TicketSearch implements Search {
                                     field = p.getRight().getTicket().getClass().getDeclaredField(fieldName);
                                     field.setAccessible(true);
                                 } catch (NoSuchFieldException e) {
-                                    e.printStackTrace();
+                                    logger.error(e);
                                 }
                                 Object object = null;
                                 try {
@@ -47,9 +47,10 @@ public class TicketSearch implements Search {
                                 return Pair.of(object, p.getRight());
                             }).filter(left -> Objects.nonNull(left.getLeft())).filter(
                     q -> {
-                        if (q.getLeft() instanceof ArrayList) {
-                            ArrayList<String> left = (ArrayList<String>) q.getLeft();
-                            return left.contains(fieldValue);
+                        if (q.getLeft().getClass().isArray()) {
+                            String[] left = (String[]) q.getLeft();
+                            List<String> list = Arrays.asList(left);
+                            return list.contains(fieldValue);
                         } else if (q.getLeft() instanceof Boolean) {
                             return Boolean.parseBoolean(Boolean.toString((Boolean) q.getLeft()));
                         } else {
@@ -60,7 +61,7 @@ public class TicketSearch implements Search {
                 return new SearchResults.TicketBuilder().setTicketSearchResult(searchResults).build();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
         return null;
@@ -96,7 +97,7 @@ public class TicketSearch implements Search {
                             user ->
                                     user.getUser().get_id().equals(ticket.getAssignee_id())).
                             map(
-                              user -> new UserRefBuilder.Builder().setassigneeName(user.getUser().getName()).
+                              user -> new UserRefBuilder.Builder().setAssigneeName(user.getUser().getName()).
                                       build()).collect(Collectors.toList());
 
                     List<UserRefBuilder> submitterUsers = users.stream().filter(
@@ -120,7 +121,7 @@ public class TicketSearch implements Search {
                         );
 
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error(e);
                     }
                 });
 

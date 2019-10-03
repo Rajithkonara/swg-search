@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class OrganizationSearch implements Search {
                                     field = p.getRight().getOrganization().getClass().getDeclaredField(fieldName);
                                     field.setAccessible(true);
                                 } catch (NoSuchFieldException e) {
-                                    e.printStackTrace();
+                                    logger.error(e);
                                 }
                                 Object object = null;
                                 try {
@@ -50,17 +51,18 @@ public class OrganizationSearch implements Search {
                                 }
                                 return Pair.of(object, p.getRight());
                             })
-                            .filter(left -> Objects.nonNull(left.getLeft())).filter(
-                                    q -> {
-                                        if (q.getLeft() instanceof ArrayList) {
-                                            ArrayList<String> left = (ArrayList<String>) q.getLeft();
-                                            return left.contains(fieldValue);
-                                        } else if (q.getLeft() instanceof Boolean) {
-                                            return Boolean.parseBoolean(Boolean.toString((Boolean) q.getLeft()));
-                                        } else {
-                                            return q.getLeft().equals(fieldValue);
-                                        }
-                                    }).map(Pair::getRight).collect(Collectors.toList());
+                    .filter(left -> Objects.nonNull(left.getLeft())).filter(
+                            q -> {
+                                if (q.getLeft().getClass().isArray()) {
+                                    String[] left = (String[]) q.getLeft();
+                                    List<String> list = Arrays.asList(left);
+                                    return list.contains(fieldValue);
+                                } else if (q.getLeft() instanceof Boolean) {
+                                    return Boolean.parseBoolean(Boolean.toString((Boolean) q.getLeft()));
+                                } else {
+                                    return q.getLeft().equals(fieldValue);
+                                }
+                            }).map(Pair::getRight).collect(Collectors.toList());
 
             return new SearchResults.OrganizationBuilder().setOrgSearchResult(searchResult).build();
         } catch (IOException e) {
@@ -90,31 +92,31 @@ public class OrganizationSearch implements Search {
         DataHolder.getInstance().getOrganizations().forEach(
                 organization -> {
 
-                    List<TicketRefBuilder> attachedTickets =  tickets.stream().filter(
+                    List<TicketRefBuilder> attachedTickets = tickets.stream().filter(
                             ticket ->
                                     organization.get_id().equals(ticket.getOrganizationName()))
                             .map(
-                            ticket ->
-                                    new TicketRefBuilder.Builder().setSubject(ticket.getTicket().getSubject()).build()).
-                            collect(Collectors.toList());
+                                    ticket ->
+                                            new TicketRefBuilder.Builder().setSubject(ticket.getTicket().getSubject()).build()).
+                                    collect(Collectors.toList());
 
                     try {
-                        List<String> users =  DataHolder.getInstance().getUsers().stream().filter(
+                        List<String> users = DataHolder.getInstance().getUsers().stream().filter(
                                 user ->
                                         organization.get_id().equals(user.getOrganization_id())
                         ).map(User::getName).collect(Collectors.toList());
 
-                        orgSearchResultList.add(new OrganizationSearchResultBuilder.Builder().setOraganization(organization).
+                        orgSearchResultList.add(new OrganizationSearchResultBuilder.Builder().setOrganization(organization).
                                 setTickets(attachedTickets).
                                 setUsers(users).build());
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error(e);
                     }
 
 
                 });
 
-            return orgSearchResultList;
+        return orgSearchResultList;
 
     }
 
