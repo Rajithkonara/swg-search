@@ -17,24 +17,19 @@ public class UserSearch implements Search {
 
     private TicketSearch ticketSearch;
 
-    private OrganizationSearch organizationSearch;
-
     public UserSearch() {
         ticketSearch = new TicketSearch();
-        organizationSearch = new OrganizationSearch();
     }
 
     @Override
     public SearchResults search(String fieldName, String fieldValue) {
+
         try {
             //get all the tickets
             List<TicketBuilder> allTickets = ticketSearch.getAllTickets();
 
-            //get all organizations
-            List<OrganizationBuilder> allOrganizations = organizationSearch.getAllOrganizations();
-
             //get all the users related
-            List<UserBuilder> allUsers = getUserWithTickets(allTickets, allOrganizations);
+            List<UserBuilder> allUsers = getUserWithTickets(allTickets);
 
             List<UserBuilder> searchResult =
                     allUsers.stream().map(p -> Pair.of(p.getUser().get_id(), p))
@@ -58,16 +53,17 @@ public class UserSearch implements Search {
                                     }).filter(
                             left -> Objects.nonNull(left.getLeft())).filter(
                             q -> {
-                                if (q.getLeft() instanceof ArrayList) {
-                                    ArrayList<String> left = (ArrayList<String>) q.getLeft();
-                                    return left.contains(fieldValue);
+                                if (q.getLeft().getClass().isArray()) {
+                                    String[] left = (String[]) q.getLeft();
+                                    List<String> list = Arrays.asList(left);
+                                    return list.contains(fieldValue);
                                 } else if (q.getLeft() instanceof Boolean) {
                                     return Boolean.parseBoolean(Boolean.toString((Boolean) q.getLeft()));
                                 } else {
                                     return q.getLeft().equals(fieldValue);
                                 }
                             }
-                    ).filter(left -> Objects.nonNull(left.getLeft())).map(q -> q.getRight())
+                    ).filter(left -> Objects.nonNull(left.getLeft())).map(Pair::getRight)
                             .collect(Collectors.toList());
 
 
@@ -79,8 +75,7 @@ public class UserSearch implements Search {
         return null;
     }
 
-    private List<UserBuilder> getUserWithTickets(List<TicketBuilder> allTickets,
-                                                 List<OrganizationBuilder> allorg) throws IOException {
+    private List<UserBuilder> getUserWithTickets(List<TicketBuilder> allTickets) throws IOException {
 
         List<UserBuilder> userResultBuilder = new ArrayList<>();
 
@@ -92,7 +87,8 @@ public class UserSearch implements Search {
                                     ticket -> user.get_id().equals(ticket.getSubmittedByUser())
                             ).map(
                                     ticket -> new TicketRefBuilder.Builder()
-                                            .setSubject(ticket.getTicket().getSubject()).build()).collect(Collectors.toList());
+                                            .setSubject(ticket.getTicket().getSubject()).build()).
+                                    collect(Collectors.toList());
 
                     List<TicketRefBuilder> ticketAssigners = allTickets.stream()
                             .filter(
@@ -104,7 +100,6 @@ public class UserSearch implements Search {
 
                     try {
                         List<String> organizations = DataHolder.getInstance().getOrganizations().stream().filter(
-
                                 organization ->
                                         organization.get_id().equals(user.getOrganization_id())
                         ).map(Organization::getName).collect(Collectors.toList());
@@ -116,7 +111,7 @@ public class UserSearch implements Search {
                                         .setTicketsAssigned(ticketAssigners).build());
 
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error(e);
                     }
 
                 });
@@ -137,8 +132,4 @@ public class UserSearch implements Search {
                                         .build())
                 .collect(Collectors.toList());
     }
-
-
-
-
 }
