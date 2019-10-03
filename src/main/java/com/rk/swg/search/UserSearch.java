@@ -102,15 +102,43 @@ public class UserSearch implements Search {
                                             .setSubject(ticket.getTicket().getSubject()).build()
                             ).collect(Collectors.toList());
 
-                    userResultBuilder.add(
-                            new UserBuilder.Builder().setUser(user)
-                                    .setOrganizationName(null)
-                                    .setTicketsSubmitted(ticketSubmitters)
-                                    .setTicketsAssigned(ticketAssigners).build());
+                    try {
+                        List<String> organizations = DataHolder.getInstance().getOrganizations().stream().filter(
+
+                                organization ->
+                                        organization.get_id().equals(user.getOrganization_id())
+                        ).map(Organization::getName).collect(Collectors.toList());
+
+                        userResultBuilder.add(
+                                new UserBuilder.Builder().setUser(user)
+                                        .setOrganizationName(String.valueOf(organizations))
+                                        .setTicketsSubmitted(ticketSubmitters)
+                                        .setTicketsAssigned(ticketAssigners).build());
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                 });
 
         return userResultBuilder;
     }
+
+    /**
+     * List of all tickets
+     * @return tickets
+     */
+    List<UserBuilder> getAllUsers() throws IOException {
+
+        return DataHolder.getInstance().getUsers().stream()
+                .map(
+                        p ->
+                                new UserBuilder.Builder().setUser(p).setOrganizationName(p.getOrganization_id())
+                                        .build())
+                .collect(Collectors.toList());
+    }
+
+
+
 
 }
