@@ -52,17 +52,8 @@ public class OrganizationSearch implements Search {
                                 return Pair.of(object, p.getRight());
                             })
                     .filter(left -> Objects.nonNull(left.getLeft())).filter(
-                            q -> {
-                                if (q.getLeft().getClass().isArray()) {
-                                    String[] left = (String[]) q.getLeft();
-                                    List<String> list = Arrays.asList(left);
-                                    return list.contains(fieldValue);
-                                } else if (q.getLeft() instanceof Boolean) {
-                                    return Boolean.parseBoolean(Boolean.toString((Boolean) q.getLeft()));
-                                } else {
-                                    return q.getLeft().equals(fieldValue);
-                                }
-                            }).map(Pair::getRight).collect(Collectors.toList());
+                            q -> checkType(fieldValue, q)).
+                            map(Pair::getRight).collect(Collectors.toList());
 
             return new SearchResults.OrganizationBuilder().setOrgSearchResult(searchResult).build();
         } catch (IOException e) {
@@ -71,6 +62,18 @@ public class OrganizationSearch implements Search {
 
 
         return null;
+    }
+
+    public boolean checkType(String fieldValue, Pair<Object, OrganizationSearchResultBuilder> q) {
+        if (q.getLeft().getClass().isArray()) {
+            String[] left = (String[]) q.getLeft();
+            List<String> list = Arrays.asList(left);
+            return list.contains(fieldValue);
+        } else if (q.getLeft() instanceof Boolean) {
+            return Boolean.parseBoolean(Boolean.toString((Boolean) q.getLeft()));
+        } else {
+            return q.getLeft().equals(fieldValue);
+        }
     }
 
     List<OrganizationBuilder> getAllOrganizations() throws IOException {

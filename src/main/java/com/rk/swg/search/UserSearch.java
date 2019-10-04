@@ -52,17 +52,7 @@ public class UserSearch implements Search {
                                         return Pair.of(object, p.getRight());
                                     }).filter(
                             left -> Objects.nonNull(left.getLeft())).filter(
-                            q -> {
-                                if (q.getLeft().getClass().isArray()) {
-                                    String[] left = (String[]) q.getLeft();
-                                    List<String> list = Arrays.asList(left);
-                                    return list.contains(fieldValue);
-                                } else if (q.getLeft() instanceof Boolean) {
-                                    return Boolean.parseBoolean(Boolean.toString((Boolean) q.getLeft()));
-                                } else {
-                                    return q.getLeft().equals(fieldValue);
-                                }
-                            }
+                            q -> checkType(fieldValue, q)
                     ).filter(left -> Objects.nonNull(left.getLeft())).map(Pair::getRight)
                             .collect(Collectors.toList());
 
@@ -73,6 +63,18 @@ public class UserSearch implements Search {
         }
 
         return null;
+    }
+
+    public boolean checkType(String fieldValue, Pair<Object, UserBuilder> q) {
+        if (q.getLeft().getClass().isArray()) {
+            String[] left = (String[]) q.getLeft();
+            List<String> list = Arrays.asList(left);
+            return list.contains(fieldValue);
+        } else if (q.getLeft() instanceof Boolean) {
+            return Boolean.parseBoolean(Boolean.toString((Boolean) q.getLeft()));
+        } else {
+            return q.getLeft().equals(fieldValue);
+        }
     }
 
     private List<UserBuilder> getUserWithTickets(List<TicketBuilder> allTickets) throws IOException {

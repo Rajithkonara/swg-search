@@ -46,17 +46,8 @@ public class TicketSearch implements Search {
                                 }
                                 return Pair.of(object, p.getRight());
                             }).filter(left -> Objects.nonNull(left.getLeft())).filter(
-                    q -> {
-                        if (q.getLeft().getClass().isArray()) {
-                            String[] left = (String[]) q.getLeft();
-                            List<String> list = Arrays.asList(left);
-                            return list.contains(fieldValue);
-                        } else if (q.getLeft() instanceof Boolean) {
-                            return Boolean.parseBoolean(Boolean.toString((Boolean) q.getLeft()));
-                        } else {
-                            return q.getLeft().equals(fieldValue);
-                        }
-                        }).map(Pair::getRight).collect(Collectors.toList());
+                        q -> checkType(fieldValue, q))
+                        .map(Pair::getRight).collect(Collectors.toList());
 
                 return new SearchResults.TicketBuilder().setTicketSearchResult(searchResults).build();
 
@@ -65,6 +56,18 @@ public class TicketSearch implements Search {
         }
 
         return null;
+    }
+
+    public boolean checkType(String fieldValue, Pair<Object, TicketSearchResultBuilder> q) {
+        if (q.getLeft().getClass().isArray()) {
+            String[] left = (String[]) q.getLeft();
+            List<String> list = Arrays.asList(left);
+            return list.contains(fieldValue);
+        } else if (q.getLeft() instanceof Boolean) {
+            return Boolean.parseBoolean(Boolean.toString((Boolean) q.getLeft()));
+        } else {
+            return q.getLeft().equals(fieldValue);
+        }
     }
 
     /**
