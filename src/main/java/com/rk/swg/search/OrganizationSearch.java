@@ -60,7 +60,6 @@ public class OrganizationSearch implements Search {
             logger.error(e);
         }
 
-
         return null;
     }
 
@@ -116,12 +115,8 @@ public class OrganizationSearch implements Search {
                         logger.error(e);
                     }
 
-
                 });
 
         return orgSearchResultList;
-
     }
-
-
 }

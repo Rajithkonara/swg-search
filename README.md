@@ -28,11 +28,6 @@ java -jar swg-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 mvn test
 ```
-# Limitations
-
-* Only User search is implemented, could not mapped the organization
-* Output is in Json format
-* Todo : write more test cases
  
 # Sample
         
