@@ -40,7 +40,7 @@ public class TicketPrinter implements Printer {
 
                     assigneeNameList.forEach(x -> System.out.print(x.getAssigneeName() + "\n"));
 
-                    System.out.print("Submitter Name \t\t\t\t ");
+                    System.out.print(String.format("%-29s", "Submitter Name "));
 
                     if (submitterNameList.isEmpty()) {
                         System.out.print("---");
