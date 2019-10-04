@@ -29,7 +29,7 @@ public class TicketPrinter implements Printer {
                                 String.format("%-28.28s %s", entry.getKey(),
                                 entry.getValue().toString())));
 
-                    System.out.print("Assignee Name \t\t\t\t ");
+                    System.out.print(String.format("%-29s", "Assignee Name"));
 
                     List<UserRefBuilder> assigneeNameList = p.getAssigneeNames();
                     List<UserRefBuilder> submitterNameList = p.getSubmitterNames();
@@ -48,7 +48,7 @@ public class TicketPrinter implements Printer {
 
                     submitterNameList.forEach(x -> System.out.print(x.getSubmitterName() + "\n"));
 
-                    System.out.print("Organization Name \t\t\t ");
+                    System.out.print(String.format("%-29s", "Organization Name "));
 
                     System.out.print(p.getOrganizationName());
 

@@ -29,9 +29,9 @@ public class UserPrinter implements Printer {
                             System.out.println(String.format("%-28.28s %s", entry.getKey(),
                                     entry.getValue().toString())));
 
-                    System.out.println("organization_name \t\t\t " + p.getOrganizationName());
+                    System.out.println(String.format("%-28.28s %s", "organization_name", p.getOrganizationName()));
 
-                    System.out.print("Assigned Tickets \t\t\t ");
+                    System.out.print(String.format("%-29s", "Assigned Tickets"));
 
                     List<TicketRefBuilder> assignedTicketList = p.getTicketsAssigned();
                     List<TicketRefBuilder> submittedTicketList = p.getTicketsSubmitted();
@@ -46,7 +46,7 @@ public class UserPrinter implements Printer {
                     System.out.print(assignedTickets);
 
                     System.out.println(" ");
-                    System.out.print("Submitted Tickets \t\t\t ");
+                    System.out.print(String.format("%-29s", "Submitted Tickets"));
 
                     if (submittedTicketList.isEmpty()) {
                         System.out.print("---");

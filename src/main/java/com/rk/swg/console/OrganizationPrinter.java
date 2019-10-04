@@ -27,11 +27,11 @@ public class OrganizationPrinter implements Printer {
                     JsonObject jsonObject = (JsonObject) parser.parse(orgObject);
 
                     jsonObject.entrySet().forEach(entry ->
-                            System.out.println(String.format("%-20.20s %s", entry.getKey(),
+                            System.out.println(String.format("%-28.28s %s", entry.getKey(),
                             entry.getValue().toString())));
 
 
-                    System.out.print("Ticket Subjects \t ");
+                    System.out.print(String.format("%-29s", "Ticket Subjects"));
 
                     List<TicketRefBuilder> ticketSubjectList = p.getTickets();
 
@@ -46,7 +46,7 @@ public class OrganizationPrinter implements Printer {
                     List<String> usersList = p.getUsers();
 
                     System.out.println(" ");
-                    System.out.print("User Names \t\t\t ");
+                    System.out.print(String.format("%-29s", "User Names"));
 
                     if (usersList.isEmpty()) {
                         System.out.println("---");
