@@ -19,8 +19,8 @@ public class OrganizationSearch implements Search {
 
     private TicketSearch ticketSearch;
 
-    public OrganizationSearch() {
-        ticketSearch = new TicketSearch();
+    public OrganizationSearch(TicketSearch ticketSearch) {
+        this.ticketSearch = ticketSearch;
     }
 
     @Override
@@ -64,6 +64,12 @@ public class OrganizationSearch implements Search {
         return null;
     }
 
+    /**
+     * Check the value type
+     * @param fieldValue
+     * @param q
+     * @return
+     */
     public boolean checkType(String fieldValue, Pair<Object, OrganizationSearchResultBuilder> q) {
         if (q.getLeft().getClass().isArray()) {
             String[] left = (String[]) q.getLeft();
@@ -76,19 +82,13 @@ public class OrganizationSearch implements Search {
         }
     }
 
-    List<OrganizationBuilder> getAllOrganizations() throws IOException {
-
-        return DataHolder.getInstance().getOrganizations().stream()
-                .map(
-                        p ->
-                                new OrganizationBuilder.Builder().setOrganization(p)
-                                        .setName(p.getName())
-                                        .build())
-                .collect(Collectors.toList());
-    }
-
-
-    List<OrganizationSearchResultBuilder> getTicketsAndUsers(List<TicketBuilder> tickets) throws IOException {
+    /**
+     * get all relevant tickets and users
+     * @param tickets
+     * @return
+     * @throws IOException
+     */
+    private List<OrganizationSearchResultBuilder> getTicketsAndUsers(List<TicketBuilder> tickets) throws IOException {
 
         List<OrganizationSearchResultBuilder> orgSearchResultList = new ArrayList<>();
 

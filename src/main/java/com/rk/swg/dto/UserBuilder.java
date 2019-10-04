@@ -1,10 +1,11 @@
 package com.rk.swg.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Getter
+@Getter @Setter
 public class UserBuilder {
 
     private List<UserBuilder> userSearchResult;

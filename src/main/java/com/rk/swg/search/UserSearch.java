@@ -17,9 +17,11 @@ public class UserSearch implements Search {
 
     private TicketSearch ticketSearch;
 
-    public UserSearch() {
-        ticketSearch = new TicketSearch();
+    public UserSearch(TicketSearch ticketSearch) {
+        this.ticketSearch = ticketSearch;
     }
+
+    public UserSearch() {}
 
     @Override
     public SearchResults search(String fieldName, String fieldValue) {
@@ -56,7 +58,6 @@ public class UserSearch implements Search {
                     ).filter(left -> Objects.nonNull(left.getLeft())).map(Pair::getRight)
                             .collect(Collectors.toList());
 
-
             return new SearchResults.UserBuilder().setUserSearchResult(searchResult).build();
         } catch (IOException e) {
             logger.error(e);
@@ -65,6 +66,12 @@ public class UserSearch implements Search {
         return null;
     }
 
+    /**
+     * Check the value type
+     * @param fieldValue
+     * @param q
+     * @return
+     */
     public boolean checkType(String fieldValue, Pair<Object, UserBuilder> q) {
         if (q.getLeft().getClass().isArray()) {
             String[] left = (String[]) q.getLeft();
@@ -77,6 +84,12 @@ public class UserSearch implements Search {
         }
     }
 
+    /**
+     * Get all Users with reagent tickets
+     * @param allTickets
+     * @return
+     * @throws IOException
+     */
     private List<UserBuilder> getUserWithTickets(List<TicketBuilder> allTickets) throws IOException {
 
         List<UserBuilder> userResultBuilder = new ArrayList<>();

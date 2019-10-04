@@ -17,12 +17,18 @@ public class TicketSearch implements Search {
 
     private static final Logger logger = Logger.getLogger(TicketSearch.class);
 
+    private UserSearch userSearch;
+
+    public TicketSearch(UserSearch userSearch) {
+        this.userSearch = userSearch;
+    }
+
+    public TicketSearch() {}
+
     @Override
     public SearchResults search(String fieldName, String fieldValue) {
 
         try {
-
-            UserSearch userSearch = new UserSearch();
 
             List<UserBuilder> getAllUsers = userSearch.getAllUsers();
 
@@ -58,6 +64,12 @@ public class TicketSearch implements Search {
         return null;
     }
 
+    /**
+     * Check the value type
+     * @param fieldValue
+     * @param q
+     * @return
+     */
     public boolean checkType(String fieldValue, Pair<Object, TicketSearchResultBuilder> q) {
         if (q.getLeft().getClass().isArray()) {
             String[] left = (String[]) q.getLeft();
@@ -87,10 +99,15 @@ public class TicketSearch implements Search {
     }
 
 
-    List<TicketSearchResultBuilder> getUsersAndOrganization(List<UserBuilder> users) throws IOException {
+    /**
+     * Get all reagent users and organizations
+     * @param users
+     * @return
+     * @throws IOException
+     */
+    private List<TicketSearchResultBuilder> getUsersAndOrganization(List<UserBuilder> users) throws IOException {
 
         List<TicketSearchResultBuilder> ticketSearchResult = new ArrayList<>();
-
 
         DataHolder.getInstance().getTickets().forEach(
 
@@ -120,7 +137,6 @@ public class TicketSearch implements Search {
                         ticketSearchResult.add(new TicketSearchResultBuilder.Builder().setTicket(ticket)
                                 .setAssigneeName(assigneddUsers).setSubmitterName(submitterUsers).
                                         setOrganizationName(String.valueOf(organizations)).build()
-
                         );
 
                     } catch (IOException e) {

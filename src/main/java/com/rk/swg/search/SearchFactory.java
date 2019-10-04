@@ -18,11 +18,11 @@ public class SearchFactory {
     public SearchResults search(int choice, String field, String value) {
         switch (choice) {
             case 1:
-                return new UserSearch().search(field, value);
+                return new UserSearch(new TicketSearch()).search(field, value);
             case 2:
-                return new TicketSearch().search(field, value);
+                return new TicketSearch(new UserSearch()).search(field, value);
             case 3:
-                return new OrganizationSearch().search(field, value);
+                return new OrganizationSearch(new TicketSearch()).search(field, value);
             default:
                 throw new IllegalArgumentException("Not a valid criteria");
         }
